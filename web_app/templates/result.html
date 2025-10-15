@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hasil Visualisasi Regresi</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .plot-container {
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 10px;
+            margin-bottom: 20px;
+            background-color: #f9f9f9;
+        }
+        .plot-container h3 {
+            margin-top: 0;
+            color: #333;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+        .plot-container iframe {
+            width: 100%;
+            height: 500px;
+            border: none;
+        }
+        .plot-container img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Hasil Visualisasi</h1>
+        <p>Berikut adalah hasil visualisasi dari data regresi yang telah diproses.</p>
+
+        {% if pred_available %}
+            <a href="{{ url_for('download') }}" class="button">Unduh Data Prediksi (CSV)</a>
+        {% else %}
+            <p class="flash flash-warning">File data prediksi tidak tersedia untuk diunduh.</p>
+        {% endif %}
+        
+        <a href="{{ url_for('index') }}" class="button button-secondary">Kembali ke Halaman Utama</a>
+
+        <hr>
+
+        <h2>Plot yang Dihasilkan:</h2>
+        
+        {% if plots %}
+            {% for plot_file in plots %}
+                <div class="plot-container">
+                    {% if plot_file == 'regression_plot_2d.html' %}
+                        <h3>Plot 2D: Harga Aktual vs. Harga Prediksi</h3>
+                        <iframe src="{{ url_for('static', filename='plots/' + plot_file) }}"></iframe>
+                    {% elif plot_file == 'regression_plot_3d.html' %}
+                        <h3>Plot 3D: Bidang Regresi</h3>
+                        <iframe src="{{ url_for('static', filename='plots/' + plot_file) }}"></iframe>
+                    {% elif plot_file == 'regression_heatmap.png' %}
+                        <h3>Heatmap Korelasi Fitur</h3>
+                        <img src="{{ url_for('static', filename='plots/' + plot_file) }}" alt="Heatmap Korelasi">
+                    {% else %}
+                        <h3>Plot Lainnya: {{ plot_file }}</h3>
+                        <iframe src="{{ url_for('static', filename='plots/' + plot_file) }}"></iframe>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        {% else %}
+            <p class="flash flash-warning">Tidak ada plot yang berhasil dibuat. Silakan periksa pesan error di halaman utama.</p>
+        {% endif %}
+
+    </div>
+</body>
+</html>

@@ -1,0 +1,25 @@
+version: '3.9'
+services:
+  matriks_service:
+    build: ./proyek_matriks
+    container_name: matriks_service
+    volumes:
+      - ./proyek_matriks:/app/proyek_matriks
+
+  visual_service:
+    build: ./visualisasi
+    container_name: visual_service
+    volumes:
+      - ./visualisasi:/app/visualisasi
+      - ./proyek_matriks:/app/proyek_matriks  # agar bisa baca hasil dari proyek_matriks
+
+  web_service:
+    build: ./web_app
+    container_name: web_service
+    ports:
+      - "5000:5000"
+    volumes:
+      - .:/app
+    depends_on:
+      - matriks_service
+      - visual_service

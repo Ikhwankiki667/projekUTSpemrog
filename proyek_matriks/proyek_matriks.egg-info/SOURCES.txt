@@ -1,0 +1,17 @@
+setup.py
+exporters/__init__.py
+exporters/csv_exporter.py
+exporters/json_exporter.py
+importers/__init__.py
+importers/csv_importer.py
+operations/__init__.py
+operations/adder.py
+operations/determinant.py
+operations/invers.py
+operations/multiplier.py
+operations/subtractor.py
+operations/transpose.py
+proyek_matriks.egg-info/PKG-INFO
+proyek_matriks.egg-info/SOURCES.txt
+proyek_matriks.egg-info/dependency_links.txt
+proyek_matriks.egg-info/top_level.txt

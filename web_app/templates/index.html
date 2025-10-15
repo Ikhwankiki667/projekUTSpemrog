@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalkulator Regresi Matriks</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Kalkulator Regresi Matriks</h1>
+        <p>Unggah file CSV Anda untuk melakukan analisis regresi linear menggunakan operasi matriks.</p>
+        <p>Pastikan format CSV Anda memiliki kolom fitur di sebelah kiri dan satu kolom target (harga) di paling kanan, dengan header di baris pertama.</p>
+
+        <!-- Bagian untuk Menampilkan Pesan Error (Flash Messages) -->
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div class="flash-container">
+                    {% for message in messages %}
+                        <!-- Setiap pesan akan ditampilkan di sini -->
+                        <div class="flash">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <form action="/upload" method="post" enctype="multipart/form-data" class="upload-form">
+            <div class="form-group">
+                <label for="file">Pilih File CSV:</label>
+                <input type="file" name="file" id="file" required>
+            </div>
+            <button type="submit" class="button">Unggah dan Proses</button>
+        </form>
+    </div>
+</body>
+</html>
