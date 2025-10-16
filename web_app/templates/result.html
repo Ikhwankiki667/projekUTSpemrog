@@ -4,73 +4,179 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hasil Visualisasi Regresi</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 1rem;
+            font-size: 2rem;
+        }
+        
+        p {
+            color: #34495e;
+            margin-bottom: 2rem;
+            text-align: center;
+            line-height: 1.6;
+        }
+        
         .plot-container {
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            padding: 10px;
-            margin-bottom: 20px;
-            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background-color: #fff;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
-        .plot-container h3 {
+        
+        .plot-container:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+        }
+        
+        .plot-container h2 {
             margin-top: 0;
-            color: #333;
-            border-bottom: 2px solid #eee;
-            padding-bottom: 10px;
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
+            color: #2c3e50;
+            font-size: 1.5rem;
+            border-bottom: 2px solid #ecf0f1;
         }
-        .plot-container iframe {
+        
+        iframe {
             width: 100%;
             height: 500px;
             border: none;
+            border-radius: 8px;
         }
-        .plot-container img {
+        
+        img {
             max-width: 100%;
             height: auto;
             display: block;
             margin: 0 auto;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .download-btn {
+            display: inline-block;
+            margin-top: 1rem;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #28a745 0%, #218838 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            text-align: center;
+        }
+        
+        .download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+        }
+        
+        .no-plots {
+            text-align: center;
+            padding: 3rem;
+            background-color: #fff3cd;
+            border: 1px solid #ffeeba;
+            color: #856404;
+            border-radius: 12px;
+            margin: 2rem 0;
+        }
+        
+        .no-plots h3 {
+            margin-bottom: 1rem;
+            color: #856404;
+        }
+        
+        .back-link {
+            display: inline-block;
+            margin-top: 2rem;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            transition: transform 0.2s ease;
+        }
+        
+        .back-link:hover {
+            transform: translateY(-2px);
+        }
+        
+        @media (max-width: 768px) {
+            iframe {
+                height: 400px;
+            }
+            
+            .container {
+                padding: 1rem;
+            }
+            
+            h1 {
+                font-size: 1.5rem;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Hasil Visualisasi</h1>
-        <p>Berikut adalah hasil visualisasi dari data regresi yang telah diproses.</p>
+        <h1>📈 Hasil Visualisasi</h1>
+        <p>Berikut adalah hasil visualisasi dari data yang Anda unggah. Plot interaktif dapat Anda putar dan perbesar.</p>
 
-        {% if pred_available %}
-            <a href="{{ url_for('download') }}" class="button">Unduh Data Prediksi (CSV)</a>
-        {% else %}
-            <p class="flash flash-warning">File data prediksi tidak tersedia untuk diunduh.</p>
-        {% endif %}
-        
-        <a href="{{ url_for('index') }}" class="button button-secondary">Kembali ke Halaman Utama</a>
-
-        <hr>
-
-        <h2>Plot yang Dihasilkan:</h2>
-        
         {% if plots %}
-            {% for plot_file in plots %}
+            {% for plot in plots %}
                 <div class="plot-container">
-                    {% if plot_file == 'regression_plot_2d.html' %}
-                        <h3>Plot 2D: Harga Aktual vs. Harga Prediksi</h3>
-                        <iframe src="{{ url_for('static', filename='plots/' + plot_file) }}"></iframe>
-                    {% elif plot_file == 'regression_plot_3d.html' %}
-                        <h3>Plot 3D: Bidang Regresi</h3>
-                        <iframe src="{{ url_for('static', filename='plots/' + plot_file) }}"></iframe>
-                    {% elif plot_file == 'regression_heatmap.png' %}
-                        <h3>Heatmap Korelasi Fitur</h3>
-                        <img src="{{ url_for('static', filename='plots/' + plot_file) }}" alt="Heatmap Korelasi">
-                    {% else %}
-                        <h3>Plot Lainnya: {{ plot_file }}</h3>
-                        <iframe src="{{ url_for('static', filename='plots/' + plot_file) }}"></iframe>
+                    <h2>{{ plot.replace('_', ' ').replace('.html', '').replace('.png', '') | title }}</h2>
+                    
+                    {% if plot.endswith('.html') %}
+                        <iframe src="{{ url_for('static', filename='plots/' + plot) }}"></iframe>
+                    {% elif plot.endswith('.png') %}
+                        <img src="{{ url_for('static', filename='plots/' + plot) }}" alt="Visualisasi {{ plot }}">
                     {% endif %}
                 </div>
             {% endfor %}
+
+            <div class="plot-container">
+                <h2>📥 Unduh Hasil Prediksi</h2>
+                <p>Unduh file CSV yang berisi perbandingan data asli dengan hasil prediksi dari model regresi.</p>
+                <a href="{{ url_for('download') }}" class="download-btn">Unduh data_prediksi.csv</a>
+            </div>
+
         {% else %}
-            <p class="flash flash-warning">Tidak ada plot yang berhasil dibuat. Silakan periksa pesan error di halaman utama.</p>
+            <div class="no-plots">
+                <h3>⚠️ Tidak Ada Visualisasi</h3>
+                <p>Tidak ada file plot yang berhasil ditemukan di folder 'static/plots'. Ini bisa terjadi jika proses visualisasi gagal atau file gagal disalin. Silakan periksa kembali terminal server untuk pesan error.</p>
+            </div>
         {% endif %}
 
+        <a href="{{ url_for('index') }}" class="back-link">&larr; Kembali ke Halaman Utama</a>
     </div>
 </body>
 </html>

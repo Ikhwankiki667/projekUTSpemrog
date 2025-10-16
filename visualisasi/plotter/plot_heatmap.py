@@ -1,23 +1,18 @@
-import os
-import seaborn as sns
-import matplotlib.pyplot as plt
+# visualisasi/plotter/plot_heatmap.py
 
-# --- PERUBAHAN KUNCI ---
-# Nama fungsi diubah dari 'create_heatmap' menjadi 'plot_heatmap'
-# agar cocok dengan panggilan import di visualizer.py
-def plot_heatmap(df):
-    """
-    Membuat dan menyimpan plot heatmap dari korelasi antar kolom dalam DataFrame.
-    """
-    output_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'outputs', 'plots')
-    os.makedirs(output_dir, exist_ok=True)
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+def create_correlation_heatmap(df, output_dir):
+    """Buat heatmap korelasi"""
+    correlation_matrix = df.corr()
     
     plt.figure(figsize=(8, 6))
-    sns.heatmap(df.corr(), annot=True, cmap='coolwarm', fmt=".2f")
-    plt.title('Heatmap Korelasi Fitur')
+    sns.heatmap(correlation_matrix, annot=True, cmap='coolwarm', center=0, square=True, linewidths=0.5)
+    plt.title('Correlation Heatmap')
+    plt.tight_layout()
     
-    # Simpan plot ke file
-    output_path = os.path.join(output_dir, 'regression_heatmap.png')
-    plt.savefig(output_path)
-    plt.close() # Tutup plot agar tidak ditampilkan di environment non-interaktif
-    print(f"Heatmap berhasil disimpan di {output_path}")
+    png_path = os.path.join(output_dir, 'correlation_heatmap.png')
+    plt.savefig(png_path, dpi=300, bbox_inches='tight')
+    plt.close()
+    print(f"[SUCCESS] Correlation Heatmap disimpan di: {png_path}")

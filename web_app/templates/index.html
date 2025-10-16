@@ -4,32 +4,188 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kalkulator Regresi Matriks</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            max-width: 600px;
+            width: 100%;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 1rem;
+            font-size: 2rem;
+        }
+        
+        p {
+            color: #34495e;
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+        
+        .flash-container {
+            margin-bottom: 1.5rem;
+        }
+        
+        .flash {
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 8px;
+            font-weight: 500;
+            position: relative;
+            animation: fadeIn 0.3s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .flash.error {
+            background-color: #ffebee;
+            border-left: 4px solid #f44336;
+            color: #c62828;
+        }
+        
+        .flash.success {
+            background-color: #e8f5e8;
+            border-left: 4px solid #4caf50;
+            color: #2e7d32;
+        }
+        
+        .flash.info {
+            background-color: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            color: #0d47a1;
+        }
+        
+        .upload-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        label {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        input[type="file"] {
+            padding: 0.75rem;
+            border: 2px dashed #3498db;
+            border-radius: 8px;
+            background-color: #f8f9fa;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        input[type="file"]:hover {
+            border-color: #2980b9;
+            background-color: #e8f4f8;
+        }
+        
+        .button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        
+        .button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .button:active {
+            transform: translateY(0);
+        }
+        
+        .requirements {
+            background-color: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+            border-left: 4px solid #6c757d;
+            margin-top: 1rem;
+        }
+        
+        .requirements h3 {
+            color: #495057;
+            margin-bottom: 0.5rem;
+        }
+        
+        .requirements ul {
+            padding-left: 1.5rem;
+            color: #6c757d;
+        }
+        
+        .requirements li {
+            margin-bottom: 0.25rem;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
-        <h1>Kalkulator Regresi Matriks</h1>
+        <h1>📊 Kalkulator Regresi Matriks</h1>
         <p>Unggah file CSV Anda untuk melakukan analisis regresi linear menggunakan operasi matriks.</p>
-        <p>Pastikan format CSV Anda memiliki kolom fitur di sebelah kiri dan satu kolom target (harga) di paling kanan, dengan header di baris pertama.</p>
+        
+        <div class="requirements">
+            <h3>📋 Format File CSV:</h3>
+            <ul>
+                <li>Kolom fitur di sebelah kiri</li>
+                <li>Satu kolom target (harga) di paling kanan</li>
+                <li>Header di baris pertama</li>
+                <li>Minimal 2 kolom total</li>
+            </ul>
+        </div>
 
-        <!-- Bagian untuk Menampilkan Pesan Error (Flash Messages) -->
-        {% with messages = get_flashed_messages() %}
+        <!-- Bagian untuk Menampilkan Pesan -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
                 <div class="flash-container">
-                    {% for message in messages %}
-                        <!-- Setiap pesan akan ditampilkan di sini -->
-                        <div class="flash">{{ message }}</div>
+                    {% for category, message in messages %}
+                        <div class="flash {{ category }}">{{ message }}</div>
                     {% endfor %}
                 </div>
             {% endif %}
         {% endwith %}
 
-        <form action="/upload" method="post" enctype="multipart/form-data" class="upload-form">
+        <form action="{{ url_for('upload_file') }}" method="post" enctype="multipart/form-data" class="upload-form">
             <div class="form-group">
                 <label for="file">Pilih File CSV:</label>
-                <input type="file" name="file" id="file" required>
+                <input type="file" name="file" id="file" accept=".csv" required>
             </div>
-            <button type="submit" class="button">Unggah dan Proses</button>
+            <button type="submit" class="button">Unggah dan Visualisasikan</button>
         </form>
     </div>
 </body>
